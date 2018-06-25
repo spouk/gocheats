@@ -17,18 +17,16 @@ func main() {
 
 	e.Stock = e.RandomElement(10, 100)
 	e.Log.Print(e.Stock)
+	e.RunWorker(10)
 
-	var s = e.RandomElement(10, 100)
-	e.Log.Printf("Result %v\n", s)
-	for x:=0; x < 10; x ++ {
-		cutslice(s)
-	}
+
 }
 func cutslice(v []int) {
 	if len(v) == 0 {
 		return
 	}
 	element := v[0]
-	v = append(v[:0], v[0+1:]...)
+	//v = append(v[:0], v[0+1:]...)
+	v = append(v[:0], v[1:]...)
 	fmt.Printf("Element: [%v] [%v]\n", element, v)
 }

@@ -14,6 +14,7 @@ type ExampleSlice struct {
 	sync.WaitGroup
 	chanEnd   chan bool
 	chanStart chan bool
+	sync.RWMutex
 }
 
 func NewExampleSlice() *ExampleSlice {
@@ -56,15 +57,21 @@ func (e *ExampleSlice) TimeTrackerWrapper(name string) func() {
 }
 func (e *ExampleSlice) RunWorker(count int) {
 	for x := 0; x < count; x ++ {
-
+		e.Add(1)
+		go e.worker(x)
 	}
+	close(e.chanStart)
+	e.Wait()
+	e.Log.Printf("Done work\n")
 }
 func (e *ExampleSlice) worker(id int) {
 	e.Log.Printf("worker %d start", id)
 	defer func() {
 		e.Log.Printf("worker %d end", id)
+		e.Done()
 	}()
 	<- e.chanStart
+
 	for {
 		select {
 		case <- e.chanEnd:
@@ -73,8 +80,16 @@ func (e *ExampleSlice) worker(id int) {
 			if len(e.Stock) == 0 {
 				return
 			} else {
-				e.Stock = append(e.Stock[:0], e.Stock[:0]...)
+				e.Lock()
+				element := e.Stock[0]
+				e.Log.Printf("[%d] Element: %v [%v] \n", id, element, e.Stock)
+				e.Stock = append(e.Stock[:0], e.Stock[1:]...)
+				//e.Stock = append(e.Stock[0:], e.Stock[1:]...)
+				e.Unlock()
 			}
+
+
+			time.Sleep(time.Second * 2)
 		}
 	}
 }
