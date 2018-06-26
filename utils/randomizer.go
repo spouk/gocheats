@@ -59,15 +59,15 @@ func (r *Randomizer) RandomStringChoice(count int, flag int) string {
 	for i := range result {
 		switch flag {
 		case LasciiLetters:
-			result[i] = letters[rand.Intn(len(asciiLetters))]
+			result[i] = asciiLetters[rand.Intn(len(asciiLetters))]
 		case LasciiLowercase:
-			result[i] = letters[rand.Intn(len(asciiLowercase))]
+			result[i] = asciiLowercase[rand.Intn(len(asciiLowercase))]
 		case LasciiUppercase:
-			result[i] = letters[rand.Intn(len(asciiUppercase))]
+			result[i] = asciiUppercase[rand.Intn(len(asciiUppercase))]
 		case Ldigits:
-			result[i] = letters[rand.Intn(len(digits))]
+			result[i] = digits[rand.Intn(len(digits))]
 		case Lhexdigits:
-			result[i] = letters[rand.Intn(len(hexdigits))]
+			result[i] = hexdigits[rand.Intn(len(hexdigits))]
 		case Lletters:
 			result[i] = letters[rand.Intn(len(letters))]
 		default:
@@ -76,6 +76,33 @@ func (r *Randomizer) RandomStringChoice(count int, flag int) string {
 	}
 	return string(result)
 }
+func (r *Randomizer) RandomStringSliceChoice(countLen, lengthEach int, flag int) []string {
+	var result []string
+	for i := 0; i < countLen; i++ {
+		var element = make([]rune, lengthEach)
+		for x := range element {
+			switch flag {
+			case LasciiLetters:
+				element[x] = asciiLetters[rand.Intn(len(asciiLetters))]
+			case LasciiLowercase:
+				element[x] = asciiLowercase[rand.Intn(len(asciiLowercase))]
+			case LasciiUppercase:
+				element[x] = asciiUppercase[rand.Intn(len(asciiUppercase))]
+			case Ldigits:
+				element[x] = digits[rand.Intn(len(digits))]
+			case Lhexdigits:
+				element[x] = hexdigits[rand.Intn(len(hexdigits))]
+			case Lletters:
+				element[x] = letters[rand.Intn(len(letters))]
+			default:
+				panic(errors.New("wrong type flag"))
+			}
+		}
+		result = append(result, string(element))
+	}
+	return result
+}
+
 func (r *Randomizer) RandomStringSlice(countLen, lengthEach int) []string {
 	var result []string
 	for i := 0; i < countLen; i++ {
