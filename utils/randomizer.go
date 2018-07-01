@@ -3,6 +3,7 @@ package utils
 import (
 	"math/rand"
 	"errors"
+	"time"
 )
 
 var (
@@ -26,6 +27,7 @@ const (
 type Randomizer struct{}
 
 func NewRandomize() *Randomizer {
+	rand.Seed(time.Now().UTC().UnixNano())
 	return new(Randomizer)
 }
 func (r *Randomizer) Hexdigits() string {
